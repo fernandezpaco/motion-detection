@@ -4,7 +4,7 @@
   "authors": [
     "e022333 <ffernandez@bbva.com>"
   ],
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Detects motion",
   "main": "motion-detection.html",
   "keywords": [

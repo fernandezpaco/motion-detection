@@ -2,6 +2,9 @@
 
 <dom-module id="motion-detection">
 <template>
+    <canvas id="micanvas" style="display:none"></canvas>
+    <canvas id="diffcanvas" style="display:none"></canvas>
+    <canvas id="capturecanvas" style="display:none"></canvas>
 </template>
 <script>
 Polymer({
@@ -20,6 +23,8 @@ Polymer({
         '_videoinitialized(video.src)'
     ],
     attached: function(){
+        var me=this;
+
         DiffCamEngine = (function() {
             var stream;                 // stream obtained from webcam
             var video;                  // shows stream
@@ -54,8 +59,8 @@ Polymer({
                 }
 
                 // incoming options with defaults
-                video = options.video || document.createElement('video');
-                motionCanvas = options.motionCanvas || document.createElement('canvas');
+                video = options.video;
+                motionCanvas = options.motionCanvas;
                 captureIntervalTime = options.captureIntervalTime || 100;
                 captureWidth = options.captureWidth || 640;
                 captureHeight = options.captureHeight || 480;
@@ -73,8 +78,8 @@ Polymer({
                 captureCallback = options.captureCallback || function() {};
 
                 // non-configurable
-                captureCanvas = document.createElement('canvas');
-                diffCanvas = document.createElement('canvas');
+                captureCanvas = me.$.capturecanvas;
+                diffCanvas = me.$.diffcanvas;
                 isReadyToDiff = false;
 
                 // prep video
@@ -258,9 +263,13 @@ Polymer({
             };
             })();
 
-            var me=this;
+    },
+    _videoinitialized: function(srcObject){
+        if(srcObject!=""){
+            var me = this;
             DiffCamEngine.init({
                 video: me.video,
+                motionCanvas: me.$.micanvas,
                 captureIntervalTime: 100,
                 captureCallback: myCaptureHandler
             });            
@@ -273,10 +282,6 @@ Polymer({
                 }
             }
 
-
-    },
-    _videoinitialized: function(srcObject){
-        if(srcObject!=""){
             DiffCamEngine.start();
         }
     }
