@@ -1,0 +1,28 @@
+{
+  "name": "motion-detection",
+  "homepage": "https://github.com/fernandezpaco/motion-detection",
+  "authors": [
+    "e022333 <ffernandez@bbva.com>"
+  ],
+  "version": "1.0.0",
+  "description": "Detects motion",
+  "main": "motion-detection.html",
+  "keywords": [
+    "web-components"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.0.0",
+    "webcomponentsjs": "^0.7.22"
+  },
+  "devDependencies": {
+    "video-camera": "^1.0.1"    
+  },  
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
