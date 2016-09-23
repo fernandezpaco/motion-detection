@@ -17,6 +17,14 @@ Polymer({
             type: Boolean,
             value: false,
             notify: true
+        },
+        captureIntervalTime: {
+            type: Number,
+            value: 100
+        },
+        debouncer: {
+            type: Array,
+            value: [1000,2000,5000,10000,30000,60000]
         }
     },
     observers:[
@@ -270,14 +278,26 @@ Polymer({
             DiffCamEngine.init({
                 video: me.video,
                 motionCanvas: me.$.micanvas,
-                captureIntervalTime: 100,
+                captureIntervalTime: me.captureIntervalTime,
                 captureCallback: myCaptureHandler
             });            
 
+            var detections=0;
+            var timelastdetection=0;
             function myCaptureHandler(payload){
                 if(payload.hasMotion){
-                    me.motion=true;
+                    if(Date.now()>timelastdetection+me.debouncer[detections]){
+                        timelastdetection=Date.now();
+                        me.motion=true;
+                        if(detections<me.debouncer.length-1)
+                            detections++;
+                    }else{
+                        console.log("Secs remaining:"+(timelastdetection+me.debouncer[detections]-Date.now())/1000);
+                    }
                 }else{
+                    if(Date.now()>timelastdetection+me.debouncer[detections]){
+                        detections=0;
+                    }                    
                     me.motion=false;
                 }
             }
