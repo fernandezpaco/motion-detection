@@ -278,6 +278,7 @@ Polymer({
             DiffCamEngine.init({
                 video: me.video,
                 motionCanvas: me.$.micanvas,
+                includeMotionBox: true,
                 captureIntervalTime: me.captureIntervalTime,
                 captureCallback: myCaptureHandler
             });            
@@ -285,12 +286,16 @@ Polymer({
             var detections=0;
             var timelastdetection=0;
             function myCaptureHandler(payload){
-                if(payload.hasMotion){
+                if(payload.hasMotion && payload.motionBox){
                     if(Date.now()>timelastdetection+me.debouncer[detections]){
                         timelastdetection=Date.now();
                         me.motion=true;
+                        me.fire('motion-detected', {
+                            desc: "motion-detected ["+payload.motionBox.x.max+","+payload.motionBox.x.min+"]["+payload.motionBox.y.max+","+payload.motionBox.y.min+"]",
+                            motionBox: payload.motionBox
+                        });                        
                         if(detections<me.debouncer.length-1)
-                            detections++;
+                        detections++;
                     }else{
                         console.log("Secs remaining:"+(timelastdetection+me.debouncer[detections]-Date.now())/1000);
                     }
