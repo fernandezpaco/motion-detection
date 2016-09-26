@@ -18,13 +18,17 @@ Polymer({
             value: false,
             notify: true
         },
-        captureIntervalTime: {
+        captureintervaltime: {
             type: Number,
             value: 100
         },
         debouncer: {
             type: Array,
             value: [1000,2000,5000,10000,30000,60000]
+        },
+        scorethreshold: {
+            type: Number,
+            value: 100
         }
     },
     observers:[
@@ -279,8 +283,11 @@ Polymer({
                 video: me.video,
                 motionCanvas: me.$.micanvas,
                 includeMotionBox: true,
-                captureIntervalTime: me.captureIntervalTime,
-                captureCallback: myCaptureHandler
+                captureWidth: ~~(60 * me.video.videoWidth / me.video.videoHeight),
+                captureHeight: 60,
+                captureIntervalTime: me.captureintervaltime,
+                captureCallback: myCaptureHandler,
+                scoreThreshold: me.scorethreshold
             });            
 
             var detections=0;
@@ -288,6 +295,7 @@ Polymer({
             var timelastdetectiondebounced=0;
             function myCaptureHandler(payload){
                 if(payload.hasMotion && payload.motionBox){
+                    console.log(payload.score);
                     timelastdetectiondebounced=Date.now();
                     if(Date.now()>timelastdetection+me.debouncer[detections]){
                         timelastdetection=Date.now();
