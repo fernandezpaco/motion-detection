@@ -285,8 +285,10 @@ Polymer({
 
             var detections=0;
             var timelastdetection=0;
+            var timelastdetectiondebounced=0;
             function myCaptureHandler(payload){
                 if(payload.hasMotion && payload.motionBox){
+                    timelastdetectiondebounced=Date.now();
                     if(Date.now()>timelastdetection+me.debouncer[detections]){
                         timelastdetection=Date.now();
                         me.motion=true;
@@ -295,12 +297,12 @@ Polymer({
                             motionBox: payload.motionBox
                         });                        
                         if(detections<me.debouncer.length-1)
-                        detections++;
+                            detections++;
                     }else{
                         console.log("Secs remaining:"+(timelastdetection+me.debouncer[detections]-Date.now())/1000);
                     }
                 }else{
-                    if(Date.now()>timelastdetection+me.debouncer[detections]){
+                    if(Date.now()>timelastdetectiondebounced+me.debouncer[detections]){
                         detections=0;
                     }                    
                     me.motion=false;
